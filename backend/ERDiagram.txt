@@ -1,0 +1,14 @@
++-------------------+       +-------------------+       +-------------------+
+|      Patient      |       |      Doctor       |       |    Appointment    |
++-------------------+       +-------------------+       +-------------------+
+| patientID (PK)    |<------| doctorID (PK)     |<------| appointmentID (PK) |
+| name              |       | name              |       | patientID (FK)    |
+| dateOfBirth       |       | specialization    |       | doctorID (FK)     |
+| gender            |       | contactInformation|       | appointmentDate   |
+| address           |       | address           |       | reason            |
+| contactInformation|       +-------------------+       | status            |
+| emergencyContact  |                                   +-------------------+
+| allergies         |
+| pastMedicalHistory|
+| checkedBy         |
++-------------------+
