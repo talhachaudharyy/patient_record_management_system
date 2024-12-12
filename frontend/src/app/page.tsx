@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -8,9 +8,13 @@ import { UserCircle, ShieldCheck, FileText, Lock, Clock, Users, Moon, Sun, Chevr
 export default function Home() {
   const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [loading, setLoading] = useState(false); // State to manage loading
 
   const handleAdminLogin = () => {
-    router.push('/pages/adminLogin');
+    setLoading(true); // Show loading spinner
+    setTimeout(() => {
+      router.push('/pages/adminLogin'); // Navigate after 2 seconds
+    }, 2000); // Simulate a 2-second delay for loading
   };
 
   const handleUserLoginRegister = () => {
@@ -30,9 +34,16 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'} transition-colors duration-300`}>
+      {/* Loading Spinner */}
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+          <img src="/loading.svg" alt="Loading" className="w-16 h-16 animate-spin" />
+        </div>
+      )}
+
       <header className="py-6 px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-700">
         <nav className="flex justify-between items-center max-w-7xl mx-auto">
-          <motion.div 
+          <motion.div
             className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -68,7 +79,7 @@ export default function Home() {
           <p className={`text-xl mb-12 max-w-2xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Efficient, secure, and user-friendly medical record management system for healthcare providers.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row justify-center gap-6">
             <motion.button
               onClick={handleUserLoginRegister}
@@ -80,7 +91,7 @@ export default function Home() {
             </motion.button>
             <motion.button
               onClick={handleAdminLogin}
-              className={`px-8 py-3 ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-100'} ${isDarkMode ? 'text-white' : 'text-gray-900'} font-semibold rounded-lg shadow-md transition duration-300 ease-in-out border border-gray-300`}
+              className={`px-8 py-3 ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'text-gray-900 bg-white hover:bg-gray-100'} font-semibold rounded-lg shadow-md transition duration-300 ease-in-out border border-gray-300`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

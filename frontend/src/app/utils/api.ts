@@ -83,11 +83,11 @@ export const loginAdmin = async (email: string, password: string) => {
       body: JSON.stringify({ email, password }),
     });
 
+    // Check if the response is not OK
     if (!response.ok) {
-      // Capture and throw the response error if available
       const errorResponse = await response.json();
       const errorMessage = errorResponse.message || 'Login failed';
-      throw new Error(errorMessage);
+      throw new Error(errorMessage); // Throw the error message from the server
     }
 
     const data = await response.json();
@@ -98,12 +98,17 @@ export const loginAdmin = async (email: string, password: string) => {
     }
 
     // Save admin data in cookies
-    Cookies.set('adminData', JSON.stringify(data.admin), { expires: 1 }); // Expires in 1 day
+    const adminData = {
+      admin: data.admin,
+      token: data.token,
+    };
 
-    return data;
+    Cookies.set('adminData', JSON.stringify(adminData), { expires: 1 }); // Expires in 1 day
+
+    return data; // Return the successful response
   } catch (error: unknown) {
     if (error instanceof Error) {
-      throw new Error(`Login failed: ${error.message}`);
+      throw error; // Re-throw the original error without wrapping it
     } else {
       throw new Error('Login failed: An unknown error occurred.');
     }
@@ -115,7 +120,7 @@ export const loginAdmin = async (email: string, password: string) => {
 export const changeAdminPassword = async (email: any, newPassword: any, confirmPassword: any) => {
   // Get adminData from the cookie
   const adminData = Cookies.get('adminData');
-  
+
   // Check if the cookie is available
   if (!adminData) {
     throw new Error('No authentication data found. Please log in again.');
@@ -213,7 +218,7 @@ export const deleteAppointment = async (appointmentId: any) => {
 export const fetchUnapprovedUsers = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/user/unapproved`);
-    
+
     // Check if the response status is 204 No Content
     if (response.status === 204) {
       return [];
@@ -242,7 +247,7 @@ export const approveUser = async (id: string) => {
     const { token } = JSON.parse(adminData);
 
     const response = await fetch(`${API_BASE_URL}/api/user/approve/${id}`, {
-      method: 'PATCH', 
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`, // Include the token in the headers
@@ -271,7 +276,7 @@ export const deleteUser = async (id: string) => {
     const { token } = JSON.parse(adminData);
 
     const response = await fetch(`${API_BASE_URL}/api/user/delete/${id}`, {
-      method: 'DELETE', 
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`, // Include the token in the headers
@@ -456,7 +461,7 @@ export const fetchAppointmentCount = async () => {
       const data = await response.json();
       console.log('Appointment Count:', data.totalAppointments); // Log the appointment count
       return data.totalAppointments; // Return totalAppointments directly
-  } 
+  }
   catch (error) {
       console.error('Error fetching appointment count:', error);
       throw error; // Rethrow the error for further handling
