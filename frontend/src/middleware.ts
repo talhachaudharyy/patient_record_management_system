@@ -5,6 +5,11 @@ export function middleware(request: NextRequest) {
   const userData = request.cookies.get('userData');
   const adminData = request.cookies.get('adminData');
 
+  // Allow access to admin login page if no user or admin data is present
+  if (!userData && !adminData && request.nextUrl.pathname === '/pages/adminLogin') {
+    return NextResponse.next();
+  }
+
   if (userData) {
     const user = JSON.parse(userData.value);
 
@@ -23,10 +28,8 @@ export function middleware(request: NextRequest) {
     }
 
     // Restrict access to admin pages for patients and doctors
-    if (user.type === 'patient' || user.type === 'doctor') {
-      if (request.nextUrl.pathname === '/pages/adminHome' || request.nextUrl.pathname === '/pages/adminLogin') {
-        return NextResponse.redirect(new URL(user.type === 'patient' ? '/pages/patientHome' : '/pages/doctorHome', request.url));
-      }
+    if (request.nextUrl.pathname.startsWith('/pages/admin')) {
+      return NextResponse.redirect(new URL(user.type === 'patient' ? '/pages/patientHome' : '/pages/doctorHome', request.url));
     }
   } else if (adminData) {
     const admin = JSON.parse(adminData.value);
@@ -36,13 +39,17 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/pages/adminHome', request.url));
     }
 
-    // Restrict access based on admin type
-    if (admin.type === 'admin' && !request.nextUrl.pathname.startsWith('/pages/admin')) {
+    // Restrict access to non-admin pages for admin users
+    if (!request.nextUrl.pathname.startsWith('/pages/admin')) {
       return NextResponse.redirect(new URL('/pages/adminHome', request.url));
     }
   } else {
-    // If user data is not present, redirect to appropriate home page based on the requested path
-    if (request.nextUrl.pathname === '/pages/doctorHome' || request.nextUrl.pathname === '/pages/patientHome' || request.nextUrl.pathname === '/pages/adminHome') {
+    // If no user or admin data is present, restrict access to protected pages
+    // except for the admin login page
+    if ((request.nextUrl.pathname.startsWith('/pages/doctor') ||
+         request.nextUrl.pathname.startsWith('/pages/patient') ||
+         request.nextUrl.pathname.startsWith('/pages/admin')) &&
+        request.nextUrl.pathname !== '/pages/adminLogin') {
       return NextResponse.redirect(new URL('/', request.url));
     }
   }
