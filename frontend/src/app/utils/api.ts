@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://patient-record-management-system.vercel.app';
 
 interface Patient {
   _id: string;
@@ -454,7 +454,7 @@ export const fetchUserCounts = async () => {
 
 export const fetchAppointmentCount = async () => {
   try {
-      const response = await fetch("http://localhost:5000/api/appointments/count");
+      const response = await fetch(`${API_BASE_URL}/api/appointments/count`);
       if (!response.ok) {
           throw new Error('Failed to fetch appointment count');
       }
