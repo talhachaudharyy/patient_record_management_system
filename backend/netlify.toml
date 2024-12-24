@@ -1,6 +1,0 @@
-[build]
-  command = "npm install" # Install dependencies
-  functions = "netlify/functions" # Directory for Netlify Functions
-
-[build.environment]
-  NODE_VERSION = "18" # Specify the Node.js version
