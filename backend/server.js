@@ -20,6 +20,12 @@ app.use(express.json({ extended: false }));
 // Enable CORS for all routes
 app.use(cors());
 
+app.get('/', (req,res)=> {
+  res.send("Surver is running")
+})
+
+
+
 // Define Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);

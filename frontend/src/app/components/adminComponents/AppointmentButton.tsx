@@ -10,6 +10,45 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Label } from '@/components/ui/label';
 import { fetchDoctors, createAppointment } from '@/app/utils/api';
 import { Loader2, CheckCircle } from 'lucide-react';
+import { z } from "zod"; // Import Zod
+
+// Define Zod schema for appointment form validation
+const appointmentSchema = z.object({
+  firstName: z.string().min(1, "First Name is required").max(10, "First Name must be 10 characters or less"),
+  lastName: z.string().min(1, "Last Name is required").max(10, "Last Name must be 10 characters or less"),
+  phoneNumber: z.string().refine(
+    (value) => /^\d{12}$/.test(value), // Ensure exactly 12 digits
+    "Phone Number must be exactly 12 digits"
+  ),
+  doctor: z.string().min(1, "Doctor is required"),
+  email: z.string().email("Invalid email address").refine(
+    (value) => /\b(gmail\.com|yahoo\.com|hotmail\.com)$/.test(value),
+    "Email must end with gmail.com, yahoo.com, or hotmail.com"
+  ),
+  appointmentDate: z.string().refine(
+    (value) => {
+      const selectedDate = new Date(value);
+      const today = new Date();
+      const maxDate = new Date();
+      maxDate.setDate(today.getDate() + 30); // Allow dates within the next 30 days
+      return selectedDate >= today && selectedDate <= maxDate;
+    },
+    "Appointment date must be within the next 30 days"
+  ),
+  appointmentTime: z.string().min(1, "Appointment Time is required"),
+  age: z.string().refine(
+    (value) => {
+      const age = parseInt(value, 10);
+      return age > 0;
+    },
+    "Age must be greater than 0"
+  ),
+  gender: z.string().min(1, "Gender is required"),
+  address: z.string().min(1, "Address is required"),
+  reasonForVisit: z.string().min(1, "Reason for Visit is required"),
+  medicalRecord: z.string().optional(),
+  prescription: z.string().optional(),
+});
 
 interface AppointmentFormDialogProps {
   isOpen: boolean;
@@ -47,6 +86,11 @@ export default function AppointmentFormDialog({ isOpen, onClose }: AppointmentFo
         setDoctors(doctorsData);
       } catch (error) {
         console.error('Error fetching doctors:', error);
+        // Mock data for testing if fetchDoctors is not working
+        setDoctors([
+          { _id: '1', name: 'Dr. John Doe', specialization: 'cardiology' },
+          { _id: '2', name: 'Dr. Jane Smith', specialization: 'dermatology' },
+        ]);
       }
     };
     fetchDoctorsData();
@@ -60,15 +104,22 @@ export default function AppointmentFormDialog({ isOpen, onClose }: AppointmentFo
   };
 
   const validateForm = () => {
-    const errors: { [key: string]: string } = {};
-    const requiredFields = ['firstName', 'lastName', 'phoneNumber', 'doctor', 'email', 'appointmentDate', 'appointmentTime', 'age', 'gender', 'address', 'reasonForVisit'];
-    requiredFields.forEach(field => {
-      if (!formData[field as keyof typeof formData]) {
-        errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')} is required`;
+    try {
+      // Validate the form data using Zod schema
+      appointmentSchema.parse(formData);
+      setValidationErrors({}); // Clear validation errors if valid
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Map Zod errors to validationErrors object
+        const errors: { [key: string]: string } = {};
+        error.errors.forEach((err) => {
+          errors[err.path[0]] = err.message;
+        });
+        setValidationErrors(errors);
       }
-    });
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+      return false;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,13 +133,6 @@ export default function AppointmentFormDialog({ isOpen, onClose }: AppointmentFo
     }
 
     try {
-      const today = new Date().toISOString().split('T')[0];
-      if (formData.appointmentDate < today) {
-        setError('Cannot book an appointment for a past date');
-        setIsLoading(false);
-        return;
-      }
-
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simulated API call
 
       const isSlotBooked = await checkSlotAvailability(formData.appointmentDate, formData.appointmentTime);
@@ -153,8 +197,8 @@ export default function AppointmentFormDialog({ isOpen, onClose }: AppointmentFo
                       onChange={handleChange}
                       required
                       onInput={(e) => {
-                        const input = e.target as HTMLInputElement; 
-                        input.value = input.value.replace(/[^a-zA-Z]/g, '');
+                        const input = e.target as HTMLInputElement;
+                        input.value = input.value.replace(/[^a-zA-Z\s]/g, '').slice(0, 10); // Limit to 10 characters
                       }}
                     />
                     {validationErrors.firstName && <div className="text-red-500 text-xs mt-1">{validationErrors.firstName}</div>}
@@ -169,10 +213,9 @@ export default function AppointmentFormDialog({ isOpen, onClose }: AppointmentFo
                       onChange={handleChange}
                       required
                       onInput={(e) => {
-                        const input = e.target as HTMLInputElement; 
-                        input.value = input.value.replace(/[^a-zA-Z]/g, '');
+                        const input = e.target as HTMLInputElement;
+                        input.value = input.value.replace(/[^a-zA-Z\s]/g, '').slice(0, 10); // Limit to 10 characters
                       }}
-
                     />
                     {validationErrors.lastName && <div className="text-red-500 text-xs mt-1">{validationErrors.lastName}</div>}
                   </div>
@@ -188,6 +231,10 @@ export default function AppointmentFormDialog({ isOpen, onClose }: AppointmentFo
                       value={formData.phoneNumber}
                       onChange={handleChange}
                       required
+                      onInput={(e) => {
+                        const input = e.target as HTMLInputElement;
+                        input.value = input.value.replace(/\D/g, '').slice(0, 12); // Allow only digits and limit to 12
+                      }}
                     />
                     {validationErrors.phoneNumber && <div className="text-red-500 text-xs mt-1">{validationErrors.phoneNumber}</div>}
                   </div>
@@ -288,7 +335,7 @@ export default function AppointmentFormDialog({ isOpen, onClose }: AppointmentFo
                         const input = e.target as HTMLInputElement;
                         // Limit to 3 digits
                         if (input.value.length > 3) {
-                          input.value = input.value.slice(0, 3); 
+                          input.value = input.value.slice(0, 3);
                         }
                       }}
                     />
