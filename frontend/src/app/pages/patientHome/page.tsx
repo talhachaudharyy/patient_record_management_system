@@ -1,19 +1,19 @@
 "use client"
 import LogoutButton from '@/app/components/Logout'
 import { useEffect, useState } from 'react'
-import { 
-  CalendarIcon, 
-  ClockIcon, 
-  UserIcon, 
+import {
+  CalendarIcon,
+  ClockIcon,
+  UserIcon,
   DocumentTextIcon,
   PlusCircleIcon,
   ChevronRightIcon,
   BellIcon,
   Cog6ToothIcon,
   MagnifyingGlassIcon,
-  CheckIcon,
-  XMarkIcon
+  CheckIcon
 } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 export default function PatientHome() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -67,7 +67,7 @@ export default function PatientHome() {
               <button className="ml-3 p-1 rounded-full text-white hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <Cog6ToothIcon className="h-4 w-4" />
               </button>
-              <img className="ml-3 h-8 w-8 rounded-full" src="/placeholder.svg?height=32&width=32" alt="User avatar" />
+              <Image width={20} height={20} className="ml-3 rounded-full" src="/placeholder.svg?height=32&width=32" alt="User avatar" />
             </div>
           </div>
         </div>
@@ -224,7 +224,7 @@ function AppointmentsTab() {
     <div>
       <div className="mb-4 flex justify-between items-center">
         <h2 className="text-lg font-medium text-gray-900">Your Appointments</h2>
-        <button 
+        <button
           onClick={toggleForm}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
@@ -322,13 +322,13 @@ function AppointmentForm({ onClose, onBookingSuccess }: AppointmentFormProps) {
     reason: '',
   })
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    const { name, value } = e.target
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
       [name]: value
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault()

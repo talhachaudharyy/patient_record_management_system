@@ -9,13 +9,18 @@ import { PencilIcon, PlusIcon, TrashIcon, Search, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppointmentFormDialog from '@/app/components/adminComponents/AppointmentButton';
 import EditAppointmentDialog from '@/app/components/adminComponents/EditAppointmentDialog';
-import { fetchAppointments, updateAppointment, deleteAppointment } from '../../../utils/api';
+import { fetchAppointments, deleteAppointment } from '../../../utils/api';
 import { IAppointment } from './interfaces';
 
 interface ConfirmationDialogProps {
   onClose: () => void;
   onConfirm: () => void;
   isLoading: boolean;
+}
+
+interface DataItem {
+  _id: string;
+  // Add other properties here if needed
 }
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ onClose, onConfirm, isLoading }) => {
@@ -52,7 +57,7 @@ export default function AppointmentRecords() {
       try {
         const data = await fetchAppointments();
         // Sort patients by _id in descending order to get the latest first
-        const sortedData = data.sort((a: { _id: any; }, b: { _id: string; }) => b._id.localeCompare(a._id));
+        const sortedData = data.sort((a: DataItem, b: DataItem) => b._id.localeCompare(a._id));
 
         setAppointments(sortedData);
       } catch (error) {

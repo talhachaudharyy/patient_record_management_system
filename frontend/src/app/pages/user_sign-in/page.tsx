@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { loginUser } from '../../utils/api';
 import jwt from 'jsonwebtoken';
 import Layout from '@/app/components/Layout';
+import Image from 'next/image';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -68,7 +69,7 @@ const LoginPage: React.FC = () => {
             </p>
           <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Enter Your Credentials</h2>
-            
+
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email:</label>
@@ -88,21 +89,20 @@ const LoginPage: React.FC = () => {
                 disabled={loading} // Disable the button while loading
               >
                 {loading ? (
-                  <img src="/loading.svg" alt="Loading" className="w-6 h-6 mx-auto animate-spin" /> // Show loading spinner
+                  <Image width={15} height={15} src="/loading.svg" alt="Loading" className="w-6 h-6 mx-auto animate-spin" /> // Show loading spinner
                 ) : (
                   'Sign In'
                 )}
               </button>
             </form>
-            
+
             {message && (
               <div className="mt-4 text-center text-sm text-gray-600">
                 {message}
               </div>
             )}
-            
             <p className="mt-4 text-center text-sm text-gray-600">
-              Don't have an account? <a href="/pages/user_sign-up" className="text-teal-500 hover:text-teal-600">Sign up</a>
+              Dont have an account? <a href="/pages/user_sign-up" className="text-teal-500 hover:text-teal-600">Sign up</a>
             </p>
           </div>
         </div>

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { UserCircle, ShieldCheck, FileText, Lock, Clock, Users, Moon, Sun, ChevronRight } from 'lucide-react';
+import { FileText, Lock, Clock, Users, Moon, Sun, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Home() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function Home() {
       {/* Loading Spinner */}
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <img src="/loading.svg" alt="Loading" className="w-16 h-16 animate-spin" />
+          <Image width={30} height={30} src="/loading.svg" alt="Loading" className="animate-spin" />
         </div>
       )}
 

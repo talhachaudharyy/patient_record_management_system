@@ -17,6 +17,11 @@ interface Doctor {
   specialization: string;
 }
 
+interface DataItem {
+  _id: string;
+  // Add other properties here if needed
+}
+
 export default function DoctorRecords() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -30,8 +35,7 @@ export default function DoctorRecords() {
     const getDoctors = async () => {
       try {
         const data = await fetchDoctors();
-        const sortedData = data.sort((a: { _id: any; }, b: { _id: string; }) => b._id.localeCompare(a._id));
-
+        const sortedData = data.sort((a: DataItem, b: DataItem) => b._id.localeCompare(a._id));
         setDoctors(sortedData);
       } catch (err) {
         if (err instanceof Error) {
@@ -51,7 +55,7 @@ export default function DoctorRecords() {
     setSearchTerm(term);
   };
 
-  const filteredDoctors = doctors.filter(doctor => 
+  const filteredDoctors = doctors.filter(doctor =>
     (doctor.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     (doctor.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     (doctor.specialization || '').toLowerCase().includes(searchTerm.toLowerCase())
@@ -80,7 +84,7 @@ export default function DoctorRecords() {
     if (updatedDoctor) {
       try {
         await updateDoctor(updatedDoctor._id, updatedDoctor);
-        setDoctors(doctors.map(doctor => 
+        setDoctors(doctors.map(doctor =>
           doctor._id === updatedDoctor._id ? updatedDoctor : doctor
         ));
         setIsEditDialogOpen(false);
@@ -153,10 +157,10 @@ export default function DoctorRecords() {
                 )}
               </AnimatePresence>
               <div className="mt-4">
-                <DoctorTable 
-                  doctors={filteredDoctors} 
-                  onEdit={handleEdit} 
-                  onDelete={handleDelete} 
+                <DoctorTable
+                  doctors={filteredDoctors}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
                   showNoDataMessage={filteredDoctors.length === 0}
                 />
               </div>

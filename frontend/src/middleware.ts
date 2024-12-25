@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(user.type === 'patient' ? '/pages/patientHome' : '/pages/doctorHome', request.url));
     }
   } else if (adminData) {
-    const admin = JSON.parse(adminData.value);
+    
 
     // Redirect to appropriate home page based on admin type
     if (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/pages/user_sign-in' || request.nextUrl.pathname === '/pages/user_sign-up' || request.nextUrl.pathname === '/pages/adminLogin') {

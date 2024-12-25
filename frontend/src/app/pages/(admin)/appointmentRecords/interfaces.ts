@@ -8,7 +8,6 @@ export interface IDoctor {
 }
 
 export interface IAppointment {
-    [x: string]: any;
     _id: string;
     firstName: string;
     lastName: string;

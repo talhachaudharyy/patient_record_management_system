@@ -3,15 +3,15 @@
 import LogoutButton from '@/app/components/Logout'
 import React from 'react'
 import { useState } from 'react'
-import { 
-  CalendarIcon, 
-  ClipboardIcon, 
-  UserIcon, 
-  ChartBarIcon, 
-  BellIcon, 
+import {
+  CalendarIcon,
+  ClipboardIcon,
+
+  BellIcon,
   Cog6ToothIcon,
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 export default function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState('appointments')
@@ -65,7 +65,7 @@ export default function DoctorDashboard() {
               <button className="ml-3 p-1 rounded-full text-white hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <Cog6ToothIcon className="h-4 w-4" />
               </button>
-              <img className="ml-3 h-8 w-8 rounded-full" src="/placeholder.svg?height=32&width=32" alt="User avatar" />
+              <Image width={20} height={20} className="ml-3 rounded-full" src="/placeholder.svg?height=32&width=32" alt="User avatar" />
             </div>
           </div>
         </div>

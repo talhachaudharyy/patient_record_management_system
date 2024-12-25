@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon, BellIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { ChartBarIcon, UserIcon, WalletIcon } from 'lucide-react';
 import { fetchUserCounts, fetchAppointmentCount } from '@/app/utils/api';
+import Image from 'next/image';
 
 export default function AnalyticCard() {
     const [counts, setCounts] = useState({
@@ -13,7 +14,6 @@ export default function AnalyticCard() {
     });
     const [appointmentCount, setAppointmentCount] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const getCounts = async () => {
@@ -136,7 +136,13 @@ export default function AnalyticCard() {
                     {/* Rockets Card */}
                     <div className="relative bg-gray-900 overflow-hidden shadow rounded-lg transform transition duration-300 hover:-translate-y-2 hover:shadow-lg cursor-pointer">
                         <div className="absolute inset-0">
-                            <img src="/dashboardimg.png" alt="Overlay Image" className="w-full h-full object-cover" />
+                        <Image
+                          src="/dashboardimg.png"
+                          alt="Overlay Image"
+                          className="w-full h-full object-cover"
+                          layout="fill" // Use "fill" for full-size images
+                          objectFit="cover" // Ensures the image covers the container
+                        />
                             <div className="absolute inset-0 bg-black opacity-50"></div>
                         </div>
                         <div className="relative p-5">

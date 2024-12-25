@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { motion } from "framer-motion";
 
 const data = [
@@ -64,7 +64,7 @@ export default function SalesOverviewChart() {
                 transition={{ delay: 0.5 }}
               >
                 <span className="text-green-500 font-semibold">(+5) more</span> in 2021
-              </motion.span>        
+              </motion.span>
             </CardTitle>
           </motion.div>
         </CardHeader>
@@ -75,8 +75,8 @@ export default function SalesOverviewChart() {
             initial="hidden"
             animate="visible"
           >
-            <ChartContainer 
-              className="mt-10 sm:mt-20" 
+            <ChartContainer
+              className="mt-10 sm:mt-20"
               config={{
                 sales: { label: "Sales", color: "hsl(0, 0%, 0%)" },
                 comparison: { label: "Comparison", color: "hsl(180, 100%, 25%)" },
@@ -94,17 +94,17 @@ export default function SalesOverviewChart() {
                   <XAxis axisLine={false} tickLine={false} dataKey="month" className="text-xs text-muted-foreground" />
                   <YAxis axisLine={false} tickLine={false} className="text-xs text-muted-foreground" />
                   <Tooltip content={<ChartTooltipContent />} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="comparison" 
-                    stroke="hsl(0, 0%, 0%)" 
-                    fillOpacity={0} 
+                  <Area
+                    type="monotone"
+                    dataKey="comparison"
+                    stroke="hsl(0, 0%, 0%)"
+                    fillOpacity={0}
                     strokeWidth={2}
                   />
-                  <Area 
-                    type="monotone" 
-                    dataKey="sales" 
-                    stroke="hsl(180, 100%, 25%)" 
+                  <Area
+                    type="monotone"
+                    dataKey="sales"
+                    stroke="hsl(180, 100%, 25%)"
                     fillOpacity={1}
                     fill="url(#colorSales)"
                     strokeWidth={2}

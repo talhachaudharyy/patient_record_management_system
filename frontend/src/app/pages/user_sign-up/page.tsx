@@ -1,10 +1,10 @@
 "use client";
 import { useState } from 'react';
-import { registerUser } from '../../utils/api';
 import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from '@/app/components/Layout';
+import Image from 'next/image';
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -19,15 +19,9 @@ const RegisterPage: React.FC = () => {
     setLoading(true); // Start loading
 
     try {
-      const userData = {
-        name,
-        email,
-        password,
-        type,
-        specialization: type === 'doctor' ? specialization : undefined, // Include specialization only if user type is doctor
-      };
+     
 
-      const response = await registerUser(userData); // Hit the API
+
 
       // Simulate 3-second loading time
       setTimeout(() => {
@@ -146,7 +140,7 @@ const RegisterPage: React.FC = () => {
                     className="w-full px-3 py-2 text-sm placeholder:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                     placeholder="Your specialization"
                     value={specialization}
-                    onChange={(e) => setSpecialization(e.target.value.toLowerCase())} 
+                    onChange={(e) => setSpecialization(e.target.value.toLowerCase())}
                   />
 
                 </div>
@@ -157,7 +151,7 @@ const RegisterPage: React.FC = () => {
                 disabled={loading} // Disable the button while loading
               >
                 {loading ? (
-                  <img src="/loading.svg" alt="Loading" className="w-6 h-6 mx-auto animate-spin" /> // Show loading spinner
+                  <Image width={15} height={15} src="/loading.svg" alt="Loading" className="w-6 h-6 mx-auto animate-spin" /> // Show loading spinner
                 ) : (
                   'Sign Up'
                 )}

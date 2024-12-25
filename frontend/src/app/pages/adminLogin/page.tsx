@@ -5,11 +5,11 @@ import Cookies from 'js-cookie';
 import { loginAdmin } from '../../utils/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false); // New state for loading
   const router = useRouter();
 
@@ -27,7 +27,7 @@ export default function AdminLogin() {
       };
 
       // Set the cookie with the combined data
-      Cookies.set('adminData', JSON.stringify(adminData), { expires: rememberMe ? 7 : 1 }); // Expires in 7 days if rememberMe is true, otherwise 1 day
+      Cookies.set('adminData', JSON.stringify(adminData)); // Expires in 7 days if rememberMe is true, otherwise 1 day
 
       // Redirect to admin home page
       router.push('/pages/adminHome');
@@ -54,7 +54,7 @@ export default function AdminLogin() {
           {loading ? (
             // Loading spinner
             <div className="flex justify-center items-center">
-              <img src="/loading.svg" alt="Loading" className="w-10 h-10" />
+              <Image width={30 } height={30} src="/loading.svg" alt="Loading" />
             </div>
           ) : (
             <form className="space-y-6" onSubmit={handleSubmit}>

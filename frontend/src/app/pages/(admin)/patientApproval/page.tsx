@@ -7,11 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Search } from 'lucide-react';
-import { fetchUnapprovedUsers, approveUser, deleteUser } from '@/app/utils/api'; 
-import { User } from './types';
+import { fetchUnapprovedUsers, approveUser, deleteUser } from '@/app/utils/api';
+
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  type: string;
+}
 
 export default function PatientApproval() {
-  const [users, setUsers] = useState<User[]>([]); 
+  const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +26,7 @@ export default function PatientApproval() {
     const getUnapprovedUsers = async () => {
       try {
         const data = await fetchUnapprovedUsers();
-        const sortedData = data.sort((a: { _id: any; }, b: { _id: string; }) => b._id.localeCompare(a._id));
+        const sortedData = data.sort((a: User, b: User) => b._id.localeCompare(a._id));
 
         setUsers(sortedData);
       } catch (err) {
@@ -41,7 +47,7 @@ export default function PatientApproval() {
     setSearchTerm(e.target.value);
   };
 
-  const filteredUsers = users.filter(user => 
+  const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -112,7 +118,7 @@ export default function PatientApproval() {
                 </div>
               </div>
 
-              {/* <AnimatePresence>
+              <AnimatePresence>
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -123,7 +129,7 @@ export default function PatientApproval() {
                     {error}
                   </motion.div>
                 )}
-              </AnimatePresence> */}
+              </AnimatePresence>
 
               <Table>
                 <TableHeader>
@@ -155,17 +161,17 @@ export default function PatientApproval() {
                           <TableCell>{user.email}</TableCell>
                           <TableCell>{user.type}</TableCell>
                           <TableCell>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="mr-2" 
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="mr-2"
                               onClick={() => handleApprove(user._id)}
                             >
                               Approve
                             </Button>
-                            <Button 
-                              variant="destructive" 
-                              size="sm" 
+                            <Button
+                              variant="destructive"
+                              size="sm"
                               onClick={() => handleDelete(user._id)}
                             >
                               Delete
