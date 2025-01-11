@@ -47,7 +47,7 @@ const Navigation = () => {
       </nav>
       <aside className="flex gap-2 mr-10 items-center">
         <Link
-          href={'/agency'}
+          href={'/pages/adminLogin'}
           className="bg-teal-600 text-sm text-white p-2 px-10 rounded-md hover:bg-teal-700"
         >
           Login

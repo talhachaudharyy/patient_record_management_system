@@ -10,34 +10,44 @@ import Image from 'next/image';
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Prevent multiple submissions
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+
+    // Basic client-side validation
+    if (!email || !password) {
+      toast.error('Please fill in all fields.');
+      return;
+    }
+
+    if (isSubmitting) return; // Prevent multiple submissions
+    setIsSubmitting(true);
+    setLoading(true);
 
     try {
       const data = await loginAdmin(email, password);
 
-      // Save both adminData and adminToken in one cookie
+      // Save admin data in cookies and localStorage for faster access
       const adminData = {
         admin: data.admin,
         token: data.token,
       };
-
-      // Set the cookie with the combined data
-      Cookies.set('adminData', JSON.stringify(adminData)); // Expires in 7 days if rememberMe is true, otherwise 1 day
+      Cookies.set('adminData', JSON.stringify(adminData), { expires: 1 }); // Expires in 1 day
+      localStorage.setItem('adminData', JSON.stringify(adminData)); // Cache in localStorage
 
       // Redirect to admin home page
       router.push('/pages/adminHome');
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error("Please enter the correct information."); // Display the error message from the server
+        toast.error(error.message || 'Login failed. Please try again.');
       } else {
         toast.error('Login failed: An unknown error occurred.');
       }
-      setLoading(false); // Stop loading on error
+      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
@@ -54,7 +64,7 @@ export default function AdminLogin() {
           {loading ? (
             // Loading spinner
             <div className="flex justify-center items-center">
-              <Image width={30 } height={30} src="/loading.svg" alt="Loading" />
+              <Image width={30} height={30} src="/loading.svg" alt="Loading" />
             </div>
           ) : (
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -92,8 +102,9 @@ export default function AdminLogin() {
               <button
                 type="submit"
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-teal-400 hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                disabled={isSubmitting} // Disable button while submitting
               >
-                Sign in
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
               </button>
             </form>
           )}

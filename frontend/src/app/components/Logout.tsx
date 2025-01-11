@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 
 interface LogoutButtonProps {
     cookieName: string;
@@ -36,7 +35,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ cookieName, className }) =>
                 // Overlay for blurring the screen and showing the SVG
                 <div className="absolute inset-0 w-[1350px] bg-gray-800 bg-opacity-50 flex items-center justify-center backdrop-blur-sm z-50">
                     {/* Loading SVG */}
-                    <Image src="/loading.svg" alt="Loading" className="w-12 h-12 animate-spin" />
+                    <img src="/loading.svg" alt="Loading" className="w-12 h-12 animate-spin" />
                     <h1 className="text-white text-lg font-semibold tracking-wide uppercase">Logging Out...</h1>
                     </div>
             )}
